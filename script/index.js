@@ -13,7 +13,9 @@ function loadVideos() {
 function loadCategoryVideos(id) {
   const url = ` https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
 
-  fetch(url).then(res=>res.json()).then(data=>displayVideos(data.category))
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category));
 }
 
 function displayCategories(categories) {
@@ -23,7 +25,7 @@ function displayCategories(categories) {
   for (let category of categories) {
     const categoryDiv = document.createElement("div");
     categoryDiv.innerHTML = `
-          <button onclick="loadCategoryVideos(${category.category_id})" class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${category.category}</button>
+          <button id='btn-${category.category_id}' onclick="loadCategoryVideos(${category.category_id})" class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${category.category}</button>
         `;
     categoryContainer.appendChild(categoryDiv);
   }
@@ -31,7 +33,15 @@ function displayCategories(categories) {
 
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("video-container");
-  videoContainer.innerHTML = ""
+  videoContainer.innerHTML = "";
+
+  if (videos.length === 0) {
+    videoContainer.innerHTML = `    <div class="col-span-full flex flex-col justify-center items-center py-20 text-center">
+      <img src="Icon.png" alt="" class="w-[120px]" >
+      <h2 class="text-2xl font-bold ">Opps Sorry</h2>
+    </div>`;
+  }
+
   videos.forEach((video) => {
     const videoCard = document.createElement("div");
     videoCard.innerHTML = `
@@ -58,8 +68,7 @@ const displayVideos = (videos) => {
           <div class="intro">
             <h2 class="text-sm font-semibold">${video.title}</h2>
             <p class="text-gray-400 flex gap-2">
-              ${video.authors[0].profile_name
-              }
+              ${video.authors[0].profile_name}
               <img class="w-5 h-5"
                 src="https://img.icons8.com/?size=100&id=6xO3fnY41hu2&format=png&color=000000"
                 alt=""
@@ -73,8 +82,6 @@ const displayVideos = (videos) => {
         `;
     videoContainer.append(videoCard);
   });
-
 };
 
 loadCategories();
-
